@@ -35,7 +35,7 @@ honour-stdin = true
 ###### Apache2
 <pre>
 &lt;VirtualHost *:80&gt;
-    ServerName alerts.yourdomain
+    ServerName album.yourdomain
 
     DocumentRoot /path/to/album
 
@@ -64,7 +64,7 @@ server {
         listen   80;
         autoindex off;
 
-        server_name alerts.yourdomain;
+        server_name album.yourdomain;
 
         location /static/ {
             alias /path/to/album/static/;
