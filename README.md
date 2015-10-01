@@ -30,6 +30,7 @@ uid = kepek
 gid = kepek
 lazy-apps = true
 honour-stdin = true
+#env = ROLLBAR_TOKEN='Your rollbar token or leave this commented out'
 </pre>
 
 ###### Apache2
