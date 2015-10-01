@@ -14,10 +14,7 @@ from flask.views import MethodView
 
 from PIL import Image, ExifTags
 
-import rollbar
-import rollbar.contrib.flask
-
-__version__ = '0.0.2'
+__version__ = '0.0.3'
 
 # Config
 ##################
@@ -29,8 +26,6 @@ CHUNKS_DIR = os.path.join(BASE_DIR, 'chunks')
 
 THUMB_WIDTH = 250
 THUMB_HEIGHT = 200
-
-ROLLBAR_TOKEN = '9241c264a0944e18a9627303e5875cde'
 
 app = Flask(__name__, static_url_path='')
 app.config.from_object(__name__)
@@ -138,14 +133,22 @@ def apply_orientation(im):
 
 @app.before_first_request
 def init_rollbar():
-    """init rollbar module"""
-    rollbar.init(
-        app.config['ROLLBAR_TOKEN'],
-        'production',
-        root=os.path.dirname(os.path.realpath(__file__)),
-        allow_logging_basic_config=False)
+    reload(sys)
+    sys.setdefaultencoding('utf-8')
+    rollbar_token = os.environ.get('ROLLBAR_TOKEN', None)
 
-    got_request_exception.connect(rollbar.contrib.flask.report_exception, app)
+    if rollbar_token:
+        import rollbar
+        import rollbar.contrib.flask
+        """init rollbar module"""
+        rollbar.init(
+            rollbar_token,
+            'production',
+            root=os.path.dirname(os.path.realpath(__file__)),
+            allow_logging_basic_config=False
+        )
+
+        got_request_exception.connect(rollbar.contrib.flask.report_exception, app)
 
 # Views
 ##################
@@ -168,7 +171,7 @@ def list_dir(path):
 
     dirs.sort()
     files.sort()
-    return render_template('list.html', dirs=dirs, basedir=path, parentdir=os.path.dirname(path.rstrip('/'))+'/', files=files)
+    return render_template('list.html', dirs=dirs, basedir=path, parentdir=os.path.dirname(path.rstrip('/'))+'/', files=files, version=__version__)
 
 @app.route('/static/<path:path>')
 def send_static(path):
@@ -236,9 +239,6 @@ def newdir():
 @app.route('/errortest')
 def errortest():
     return 1 / 0
-
-reload(sys)
-sys.setdefaultencoding('utf-8')
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=8080)
