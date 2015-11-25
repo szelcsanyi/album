@@ -7,18 +7,24 @@
     <!-- CSS file
     ====================================================================== -->
     <link href="/static/fine-uploader-new.css" rel="stylesheet">
-    <link href="/static/colorbox.css" rel="stylesheet">
     <link href="/static/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/static/justifiedGallery.min.css" type="text/css" media="all" />
+    <link rel="stylesheet" href="/static/css/lightgallery.min.css" type="text/css" media="all" />
 
     <!-- JS file
     ====================================================================== -->
     <script src="/static/fine-uploader.js"></script>
     <script src="/static/jquery.min.js"></script>
     <script src="/static/jquery.justifiedGallery.min.js"></script>
-    <script src="/static/jquery.colorbox-min.js"></script>
+    <script src="/static/js/lightgallery.min.js"></script>
+    <script src="/static/js/lg-thumbnail.min.js"></script>
+    <script src="/static/js/lg-fullscreen.min.js"></script>
+    <script src="/static/js/lg-autoplay.min.js"></script>
+    <script src="/static/js/lg-zoom.min.js"></script>
+    <script src="/static/js/lg-pager.min.js"></script>
+    <!-- script src="/static/jquery.colorbox-min.js"></script -->
     <script src="/static/bootstrap.min.js"></script>
-	<script>
+	<!--script>
 		colorboxConf = {
 			maxWidth : '90%',
 			maxHeight : '90%',
@@ -28,7 +34,7 @@
                         slideshowSpeed : 4000,
 			current : '{current} / {total}'
 		};
-	</script>
+	</script-->
 
     <!-- Fine Uploader Thumbnails template w/ customization
     ====================================================================== -->
@@ -164,23 +170,31 @@
 {% if files %}
 <div id="gallery">
 {% for file in files %}
-	<a href="/images/{{ basedir }}{{ dir }}{{ file }}" title="{{ file }}">
+	<a href="/images/{{ basedir }}{{ dir }}{{ file }}" title="{{ file }}" data-sub-html="{{ file }}">
 		<img alt="{{ file }}" src="/thumbnails/{{ basedir }}{{ dir }}{{ file }}_thumbnail.jpg" />
 	</a>
 {% endfor %}
 </div>
 
 <script>
-$('#gallery').justifiedGallery({
+var $animThumb = $('#gallery');
+if ($animThumb.length) {
+  $animThumb.justifiedGallery({
     rowHeight : 150,
     lastRow : 'nojustify',
-    margins : 3,
+    margins : 2,
     waitThumbnailsLoad: false,
     rel : 'gallery'
-	}).on('jg.complete', function () {
-		$(this).find('a').colorbox(colorboxConf);
-	});
+  }).on('jg.complete', function() {
+    $animThumb.lightGallery({
+        thumbnail: true,
+        pause: 4000
+    });
+  });
+};
+
 </script>
+
 {% endif %}
 <br><br><br>
 
