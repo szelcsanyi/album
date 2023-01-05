@@ -52,7 +52,7 @@ def handle_upload(f, attrs, path):
 
 
     # Chunked
-    if attrs.has_key('qqtotalparts') and int(attrs['qqtotalparts']) > 1:
+    if 'qqtotalparts' in attrs and int(attrs['qqtotalparts']) > 1:
         chunked = True
         dest_folder = os.path.join(app.config['CHUNKS_DIR'], attrs['qquuid'])
         dest = os.path.join(dest_folder, attrs['qqfilename'], str(attrs['qqpartindex']))
@@ -82,7 +82,7 @@ def combine_chunks(total_parts, total_size, source_folder, dest):
         os.makedirs(os.path.dirname(dest))
 
     with open(dest, 'wb+') as destination:
-        for i in xrange(int(total_parts)):
+        for i in range(int(total_parts)):
             part = os.path.join(source_folder, str(i))
             with open(part, 'rb') as source:
                 destination.write(source.read())
@@ -133,8 +133,8 @@ def apply_orientation(im):
 
 @app.before_first_request
 def init_rollbar():
-    reload(sys)
-    sys.setdefaultencoding('utf-8')
+    #reload(sys)
+    #sys.setdefaultencoding('utf-8')
     rollbar_token = os.environ.get('ROLLBAR_TOKEN', None)
 
     if rollbar_token:
@@ -186,7 +186,7 @@ def send_thumbnails(path):
             app.logger.debug('Generating thumbnail')
             thumbdir = os.path.dirname(os.path.join(THUMB_DIR, path))
             if not os.path.exists( thumbdir ):
-                os.makedirs( thumbdir, 0777 )
+                os.makedirs( thumbdir, 0o777 )
 
             try:
                 image = Image.open(image_path)
@@ -232,7 +232,7 @@ def newdir():
     if dirname is not None:
         if not os.path.isdir( os.path.join( app.config['IMAGE_DIR'], basedir, dirname) ):
             app.logger.debug('Creating dir: %s%s', basedir, dirname)
-            os.mkdir( os.path.join( app.config['IMAGE_DIR'], basedir, dirname), 0770)
+            os.mkdir( os.path.join( app.config['IMAGE_DIR'], basedir, dirname), 0o770)
 
     return redirect(u'/list/{}'.format(basedir))
 
