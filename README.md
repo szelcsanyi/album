@@ -17,7 +17,7 @@ Simple, easy to use image gallery
 <pre>
 [uwsgi]
 vhost = true
-plugins = python
+plugins = python3
 master = true
 enable-threads = true
 processes = 2
@@ -102,6 +102,3 @@ server {
 
 * Freely distributable and licensed under the [MIT license](http://szelcsanyi.mit-license.org/2015/license.html).
 * Copyright (c) 2015 Gabor Szelcsanyi
-
-[![image](https://ga-beacon.appspot.com/UA-56493884-1/album/README.md)](https://github.com/szelcsanyi/album)
-
